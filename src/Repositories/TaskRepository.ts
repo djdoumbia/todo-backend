@@ -8,6 +8,7 @@ export default class TaskRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async findAll() {
+    console.log('test')
     return this.prisma.task.findMany();
   }
 
