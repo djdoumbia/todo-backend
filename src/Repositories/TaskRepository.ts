@@ -4,6 +4,7 @@ import { Prisma } from '@prisma/client';
 
 @Injectable()
 export default class TaskRepository {
+
   constructor(private readonly prisma: PrismaService) {}
 
   async findAll() {
@@ -17,16 +18,32 @@ export default class TaskRepository {
       },
     });
   }
-
   async save(
     data:
       | Prisma.XOR<Prisma.TaskCreateInput, Prisma.TaskUncheckedCreateInput>
       | Prisma.XOR<Prisma.TaskUpdateInput, Prisma.TaskUncheckedUpdateInput>,
   ) {
     if (!data.id) {
-      // @todo IMPLEMENT HERE USING PRISMA API
+      return this.prisma.task.create({
+        data: data as Prisma.TaskCreateInput,
+      });
     }
+    return this.prisma.task.update({
+      where: {
+        id: data.id as number,
+      },
+      data: data as Prisma.TaskUpdateInput,
+    });
+  }
 
-    // @todo IMPLEMENT HERE USING PRISMA API
+  async search(query: string) {
+    return this.prisma.task.findMany({
+      where: {
+        name: {
+          contains: query
+        },
+      },
+    });
+  
   }
 }
